@@ -8,7 +8,7 @@ public class Board {
 
     public Board(Integer row, Integer column) {
         if (row < 1 || column < 1){
-            throw new BoardExceptions("Erro: O tabuleiro dve ser maior que 1X1");
+            throw new BoardExceptions("Erro: O tabuleiro deve ser maior que 1x1");
         }
 
         this.row = row;
@@ -24,16 +24,16 @@ public class Board {
         return column;
     }
 
-    public Piece piece(Integer row, Integer column){
-        if (!positionExists(row, column)){
-            throw new BoardExceptions("Erro: Essa posiação não existe");
+    public Piece piece(int row, int column) {
+        if (!positionExists(row, column)) {
+            throw new BoardExceptions("Position not on the board");
         }
         return pieces[row][column];
     }
 
-    public Piece piece(Position position){
-        if (!positionExists(position)){
-            throw new BoardExceptions("Erro: Essa posiação não existe");
+    public Piece piece(Position position) {
+        if (!positionExists(position)) {
+            throw new BoardExceptions("Position not on the board");
         }
         return pieces[position.getRow()][position.getColumn()];
     }
@@ -60,7 +60,7 @@ public class Board {
     }
 
     public boolean positionExists(int row, int column){
-        return row >= 0 && row <= this.row && column >= 0 && column <= this.column;
+        return row >= 0 && row < this.row && column >= 0 && column < this.column;
     }
 
     public boolean positionExists(Position position){
@@ -68,9 +68,10 @@ public class Board {
     }
 
     public boolean thereIsPiece(Position position){
-        if (!positionExists(row, column)){
-            throw new BoardExceptions("Erro: Essa posiação não existe");
+        if (!positionExists(position)){
+            throw new BoardExceptions("Erro: Essa posição não existe");
         }
         return piece(position) != null;
     }
 }
+

@@ -1,6 +1,8 @@
 package org.example.chess;
 
-public class ChessExceptions extends RuntimeException{
+import org.example.boardgame.BoardExceptions;
+
+public class ChessExceptions extends BoardExceptions {
 
     private static final long serialVersionUID = 1L;
 
