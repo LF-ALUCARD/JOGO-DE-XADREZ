@@ -1,5 +1,6 @@
 package org.example.application;
 
+import org.example.chess.ChessMatch;
 import org.example.chess.ChessPiece;
 import org.example.chess.ChessPosition;
 import org.example.chess.Color;
@@ -43,6 +44,13 @@ public class  UI {
         catch (RuntimeException e){
             throw new InputMismatchException("Erro: somente permitidos de a1 até h8");
         }
+    }
+
+    public static void printMatch(ChessMatch chessMatch){
+        printBoard(chessMatch.getPieces());
+        System.out.println();
+        System.out.println("Turn :" + chessMatch.getTurn());
+        System.out.println("Waiting player: " + chessMatch.getCurrentPlayer());
     }
 
     public static void printBoard(ChessPiece[][] pieces){
