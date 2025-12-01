@@ -15,6 +15,7 @@ public class ChessMatch {
     private Color currentPlayer;
     private Board board;
     private boolean xeque;
+    private boolean xequeMate;
 
     private List<Piece> piecesOnTheBoard = new ArrayList<>();
     private List<Piece> capturedPieces = new ArrayList<>();
@@ -24,6 +25,10 @@ public class ChessMatch {
         turn = 1;
         currentPlayer = Color.WHITE;
         initialSetup();
+    }
+
+    public boolean getXequeMate(){
+        return this.xequeMate;
     }
 
     public boolean getXeque(){
@@ -72,9 +77,15 @@ public class ChessMatch {
          throw new ChessExceptions("Você não pode se colocar em xeque");
      }
 
-        xeque = (testCheck(opponent(currentPlayer))) ? true : false;
+        xeque = testCheck(opponent(currentPlayer));
 
-     nextTurn();
+     if (testCheckMate(opponent(currentPlayer))){
+         xequeMate= true;
+     }
+     else{
+         nextTurn();
+     }
+
      return (ChessPiece) capturedPiece;
     }
 
@@ -160,6 +171,36 @@ public class ChessMatch {
         return false;
     }
 
+    private boolean testCheckMate(Color color){
+        if (!testCheck(color)){
+            return false;
+        }
+
+        List<Piece> list = piecesOnTheBoard.stream().filter(x -> ((ChessPiece)x).getColor() == color).toList();
+
+        for(Piece x : list) {
+            boolean[][] mat = x.possibleMoves();
+            for (int i = 0; i < board.getRow(); i++) {
+                for (int j = 0; j < board.getColumn(); j++) {
+                    if (mat[i][j]) {
+                        Position source = ((ChessPiece)x).getChessPosition().toPosition();
+                        Position target = new Position(i, j);
+
+                        Piece capturedPiece = makeMove(source, target);
+                        boolean testXeque = testCheck(color);
+                        undoMove(source, target, capturedPiece);
+
+                        if (!testXeque){
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+
+        return true;
+    }
+
     public boolean[][] possibleMoves(ChessPosition sourcePosition){
         Position position = sourcePosition.toPosition();
         validateSourcePosition(position);
@@ -167,18 +208,11 @@ public class ChessMatch {
     }
 
     private void initialSetup() {
-        placeNewPiece('c', 1, new Rook(board, Color.WHITE));
-        placeNewPiece('c', 2, new Rook(board, Color.WHITE));
-        placeNewPiece('d', 2, new Rook(board, Color.WHITE));
-        placeNewPiece('e', 2, new Rook(board, Color.WHITE));
-        placeNewPiece('e', 1, new Rook(board, Color.WHITE));
-        placeNewPiece('d', 1, new King(board, Color.WHITE));
+        placeNewPiece('h', 7, new Rook(board, Color.WHITE));
+        placeNewPiece('d', 1, new Rook(board, Color.WHITE));
+        placeNewPiece('e', 1, new King(board, Color.WHITE));
 
-        placeNewPiece('c', 7, new Rook(board, Color.BLACK));
-        placeNewPiece('c', 8, new Rook(board, Color.BLACK));
-        placeNewPiece('d', 7, new Rook(board, Color.BLACK));
-        placeNewPiece('e', 7, new Rook(board, Color.BLACK));
-        placeNewPiece('e', 8, new Rook(board, Color.BLACK));
-        placeNewPiece('d', 8, new King(board, Color.BLACK));
+        placeNewPiece('b', 8, new Rook(board, Color.BLACK));
+        placeNewPiece('a', 8, new King(board, Color.BLACK));
     }
 }
